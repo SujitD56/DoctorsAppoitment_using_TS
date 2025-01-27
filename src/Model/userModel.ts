@@ -1,76 +1,44 @@
-// import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document, Model } from 'mongoose';
 
-// interface UserDocument extends Document {
-//   firstName: string;
-//   lastName: string;
-//   email: string;
-//   password: string;
-//   phone: string;
-//   createdAt: Date;
-//   updatedAt: Date;
-// }
+// Interface for the User document
+export interface IUser extends Document {
+  phone: string; // User's phone number
+  otpSessionId?: string; // OTP session ID from the OTP service
+  otpMethod?: 'sms' | 'whatsapp'; // Method used to send OTP
+  otpVerified: boolean; // Indicates if OTP is verified
+  createdAt: Date; // Timestamp for user creation
+  updatedAt: Date; // Timestamp for last update
+}
 
-// const userSchema = new Schema<UserDocument>(
-//   {
-//     firstName: { type: String, required: true },
-//     lastName: { type: String, required: true },
-//     email: { type: String, required: true, unique: true },
-//     password: { type: String, required: true },
-//     phone: { type: String, required: true },
-//   },
-//   { timestamps: true }
-// );
-
-// export const userModel = mongoose.model<UserDocument>("Users", userSchema);
-
-import mongoose, { Schema, Document } from 'mongoose';
-import { decryptData } from '../Helpers/encrypt';
-
-// Define the user schema
-const userSchema = new Schema(
+// Define the User schema
+const UserSchema: Schema<IUser> = new Schema(
   {
-    firstName: {
-      encrypted: { type: String, required: true },
-      iv: { type: String, required: true },
-    },
-    lastName: {
-      encrypted: { type: String, required: true },
-      iv: { type: String, required: true },
-    },
-    email: {
-      encrypted: { type: String, required: true },
-      iv: { type: String, required: true },
-    },
     phone: {
-      encrypted: { type: String, required: true },
-      iv: { type: String, required: true },
+      type: String,
+      required: true,
+      unique: true, // Ensures unique phone numbers
+      match: /^[0-9]{10}$/, // Validates 10-digit phone numbers
     },
-    password: {
-      encrypted: { type: String, required: true },
-      iv: { type: String, required: true },
+    otpSessionId: {
+      type: String,
+      required: false, // Optional, set during OTP generation
+    },
+    otpMethod: {
+      type: String,
+      enum: ['sms', 'whatsapp'], // Allowed OTP methods
+      required: false,
+    },
+    otpVerified: {
+      type: Boolean,
+      default: false, // Default to not verified
     },
   },
   {
-    timestamps: true,
+    timestamps: true, // Adds createdAt and updatedAt fields
   }
 );
 
-// Add a method to compare encrypted password (for login functionality)
-userSchema.methods.isPasswordMatch = function (password: string): boolean {
-  const decryptedPassword = decryptData(this.password.encrypted, this.password.iv);
-  return decryptedPassword === password;
-};
+// Create the User model
+const User: Model<IUser> = mongoose.model<IUser>('Users', UserSchema);
 
-// Export the model
-export const userModel = mongoose.model<User>('Users', userSchema);
-// export default userModel;
-
-interface User extends Document {
-  firstName: { encrypted: string; iv: string };
-  lastName: { encrypted: string; iv: string };
-  email: { encrypted: string; iv: string };
-  phone: { encrypted: string; iv: string };
-  password: { encrypted: string; iv: string };
-  isPasswordMatch(password: string): boolean;
-}
-
+export { User};

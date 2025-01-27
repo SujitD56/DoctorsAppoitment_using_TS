@@ -1,7 +1,7 @@
 import * as doctorController from "../controller/doctorController";
-import * as userController from "../controller/userController";
+import * as userControllers from "../controller/userController"
 
 export {
     doctorController,
-    userController
+    userControllers
 }

@@ -1,10 +1,9 @@
-import {Router} from "express";
+import { Router } from 'express';
+import { userControllers} from '../controller/index';
+
 const router = Router();
 
-import { userController } from "../controller/index";
-
-router.route("/userSignup").post( userController.userSignUp) ;
-router.route("/getProfile/:id").get(userController.getUserProfilebyid);
-router.route("/profiles").get(userController.getUsersController)
+router.route('/send-otp').post (userControllers.sendOtpController);
+router.route('/verify-otp').post (userControllers.verifyOtpController);
 
 export default router;
