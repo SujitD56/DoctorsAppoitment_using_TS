@@ -4,10 +4,15 @@
   "description": "",
   "main": "./src/app.ts",
   "scripts": {
-    "start": "nodemon ./src/app.ts",
-    "local": "nodemon ./src/app.ts",
-    "build": "tsc",
-    "dev": "nodemon ./src/app.ts"
+    "start": "node -r dotenv/config dist/app.js",
+    "build": "npm run clean && npm run build-ts",
+    "serve": "node dist/app.js",
+    "clean": "rimraf ./dist",
+    "build-ts": "tsc",
+    "dev": "tsc && nodemon dist/app.js",
+    "watch": "npx concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run watch-node\"",
+    "watch-node": "nodemon dist/app.js",
+    "watch-ts": "tsc -w"
   },
   "keywords": [],
   "author": "",
@@ -16,17 +21,22 @@
     "@types/axios": "^0.14.4",
     "@types/bcrypt": "^5.0.2",
     "@types/express": "^5.0.0",
-    "@types/node": "^22.10.2",
+    "@types/jsonwebtoken": "^9.0.8",
+    "@types/node": "^22.13.1",
+    "@types/pg": "^8.11.11",
     "nodemon": "^3.1.9",
     "ts-node": "^10.9.2",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.3"
   },
   "dependencies": {
     "@types/twilio": "^3.19.3",
     "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.9.2",
+    "pg": "^8.13.1",
     "twilio": "^5.4.2"
   }
 }

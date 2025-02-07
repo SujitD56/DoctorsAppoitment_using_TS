@@ -1,12 +1,12 @@
 import express, { Request, Response ,NextFunction } from "express";
 import dotenv from 'dotenv';
 dotenv.config({ path: `./${process.env.NODE_ENV ?? 'local'}.env` });
-import { connectDatabase } from "./config/db";
-import routes from './router/index';
+import Client from "./config/pg";
+import router from "./router";
 
 const app = express();
-connectDatabase();
-
+// connectDatabase();
+// Client.connect();
 app.use(express.json());
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   const statusCode = err.statusCode || 500;
@@ -14,9 +14,16 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   res.status(statusCode).json({ message });
 });
 
-app.use("/v1/", routes);
 
-const PORT = process.env.PORT || 3000;
+app.use("/v1/", router);
+
+// app.get("/hello",(req,res)=>{
+//   res.send("helllo")
+// })
+
+const PORT =  3000;
+
+console.log(PORT)
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
