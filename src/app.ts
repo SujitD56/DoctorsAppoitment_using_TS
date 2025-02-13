@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config({ path: `./${process.env.NODE_ENV ?? 'local'}.env` });
 import Client from "./config/pg";
 import router from "./router";
+import swaggerRouter from "./router/swagger";
 
 const app = express();
 // connectDatabase();
@@ -14,8 +15,13 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   res.status(statusCode).json({ message });
 });
 
+// import express, { Application } from "express";
 
-app.use("/v1/", router);
+
+// const app: Application = express();
+
+app.use("/api", swaggerRouter);
+app.use("/v1", router);
 
 // app.get("/hello",(req,res)=>{
 //   res.send("helllo")
@@ -27,5 +33,6 @@ console.log(PORT)
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Swagger Docs available at http://localhost:${PORT}/api/docs`);
 });
 

@@ -7,6 +7,7 @@ const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config({ path: `./${process.env.NODE_ENV ?? 'local'}.env` });
 const router_1 = __importDefault(require("./router"));
+const swagger_1 = __importDefault(require("./router/swagger"));
 const app = (0, express_1.default)();
 // connectDatabase();
 // Client.connect();
@@ -16,7 +17,10 @@ app.use((err, req, res, next) => {
     const message = err.message || "Internal Server Error";
     res.status(statusCode).json({ message });
 });
-app.use("/v1/", router_1.default);
+// import express, { Application } from "express";
+// const app: Application = express();
+app.use("/api", swagger_1.default);
+app.use("/v1", router_1.default);
 // app.get("/hello",(req,res)=>{
 //   res.send("helllo")
 // })
@@ -24,5 +28,6 @@ const PORT = 3000;
 console.log(PORT);
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Swagger Docs available at http://localhost:${PORT}/api/docs`);
 });
 //# sourceMappingURL=app.js.map

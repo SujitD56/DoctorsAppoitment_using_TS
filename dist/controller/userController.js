@@ -4,10 +4,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.login = exports.register = void 0;
 const index_1 = require("../services/index");
-// Registration Controller
 const register = async (req, res) => {
     const { username, email, password } = req.body;
-    console.log("bddbd", req.body);
     try {
         const newUser = await index_1.userService.registerUser(username, email, password);
         res.status(201).json({ message: 'User registered successfully', user: newUser });
@@ -17,7 +15,6 @@ const register = async (req, res) => {
     }
 };
 exports.register = register;
-// Login Controller
 const login = async (req, res) => {
     const { email, password } = req.body;
     try {

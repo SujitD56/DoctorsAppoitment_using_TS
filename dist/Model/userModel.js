@@ -47,14 +47,26 @@ exports.createUser = exports.getUserByEmail = void 0;
 const pg_1 = __importDefault(require("../config/pg"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const getUserByEmail = async (email) => {
-    const result = await pg_1.default.query('SELECT * FROM users WHERE email = $1', [email]);
-    return result.rows.length > 0 ? result.rows[0] : null;
+    try {
+        const result = await pg_1.default.query("SELECT * FROM users WHERE email = $1", [email]);
+        return result.rows.length > 0 ? result.rows[0] : null;
+    }
+    catch (error) {
+        console.error("Error fetching user by email:", error);
+        throw error;
+    }
 };
 exports.getUserByEmail = getUserByEmail;
 const createUser = async (username, email, password) => {
-    const hashedPassword = await bcrypt_1.default.hash(password, 10); // Hash the password
-    const result = await pg_1.default.query('INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING *', [username, email, hashedPassword]);
-    return result.rows[0];
+    try {
+        const hashedPassword = await bcrypt_1.default.hash(password, 10); // Hash the password
+        const result = await pg_1.default.query("INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING *", [username, email, hashedPassword]);
+        return result.rows[0];
+    }
+    catch (error) {
+        console.error("Error inserting user:", error);
+        throw error;
+    }
 };
 exports.createUser = createUser;
 //# sourceMappingURL=userModel.js.map
